@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giorgio Tarozzi · Ops Sites</title>
+<meta name="description" content="Cheatsheet e corsi operativi su Kubernetes, OpenShift, EKS, GKE, Prometheus e Redis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1117;--panel:#161f2c;--panel2:#1b2636;--line:#26344a;--fg:#d7e0ec;--muted:#8d9bb0;--acc:#4fa3ff;--acc2:#34c47c;--warn:#f2b441}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1000px 400px at 10% -10%,rgba(79,163,255,.14),transparent),var(--bg);color:var(--fg);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:56px 20px 80px}
+header h1{margin:0;font-size:30px;letter-spacing:-.01em}
+header p{margin:8px 0 0;color:var(--muted);max-width:640px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin:28px 0 20px;align-items:center}
+#q{flex:1;min-width:220px;max-width:420px;background:var(--panel);border:1px solid var(--line);color:var(--fg);border-radius:9px;padding:9px 13px;font:inherit}
+#q:focus{outline:2px solid var(--acc);outline-offset:0}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:5px 12px;font-size:13px;cursor:pointer}
+.chip.on{color:var(--acc);border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--acc);transform:translateY(-2px)}
+.top{display:flex;align-items:center;gap:12px}
+.ico{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font:700 14px "IBM Plex Mono";color:#06111f;flex:none}
+.card h2{margin:0;font-size:17px}
+.url{font:12.5px "IBM Plex Mono";color:var(--muted)}
+.card p{margin:0;color:#c3cede;font-size:14px;flex:1}
+.meta{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font:600 11px "IBM Plex Mono";padding:2px 8px;border-radius:5px;background:var(--panel2);color:var(--muted)}
+.tag.lock{background:rgba(242,180,65,.14);color:var(--warn)}
+.tag.open{background:rgba(52,196,124,.14);color:var(--acc2)}
+.hide{display:none}
+footer{margin-top:40px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer a{color:var(--acc)}
+.note{margin:0 0 18px;font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Ops Sites</h1>
+  <p>Cheatsheet e corsi operativi su Kubernetes, OpenShift e managed K8s, scritti per chi fa operations.</p>
+</header>
+
+<div class="tools">
+  <input id="q" type="search" placeholder="Cerca…  (premi /)" autocomplete="off">
+  <div id="chips"></div>
+</div>
+<p class="note">🔒 = accesso con mail autorizzata e PIN ricevuto via mail (sessione 24h).</p>
+
+<div class="grid" id="grid"></div>
+
+<footer>
+  <span>Giorgio Tarozzi</span>
+  <span><a href="https://github.com/helloiamgio" rel="noopener">github.com/helloiamgio</a></span>
+</footer>
+</div>
+
+<script>
+// Edit here: one entry per site. protected:true shows the lock badge.
+var SITES=[
+  {name:"GKE Ops",url:"https://gke-cheatsheet.pages.dev",abbr:"GKE",color:"#4fa3ff",cat:"Cloud",desc:"gcloud e kubectl da VDI Windows, console GKE, Cloud Monitoring e Logging, runbook allarmi, upgrade.",tags:["gcloud","GKE","PromQL"],protected:true},
+  {name:"EKS",url:"https://eks-cheatsheet.pages.dev",abbr:"EKS",color:"#f2b441",cat:"Cloud",desc:"Da zero a EKS: IAM, IRSA, node group, add-on, upgrade, creazione cluster e lab locale.",tags:["AWS","EKS","IRSA"],protected:true},
+  {name:"OpenShift",url:"https://openshift-cheatsheet.pages.dev",abbr:"OCP",color:"#ff6b6b",cat:"Kubernetes",desc:"Documentazione operativa OpenShift: oc, operator, networking, storage, troubleshooting.",tags:["OCP","oc"],protected:true},
+  {name:"k9s + sofka",url:"https://k9s-cheatsheet.pages.dev",abbr:"k9s",color:"#34c47c",cat:"Kubernetes",desc:"Tutte le combinazioni tasti di k9s e sofka, comandi, filtri e ricette operative.",tags:["TUI","k9s","sofka"],protected:true},
+  {name:"Prometheus",url:"https://prometheus-cheatsheet.pages.dev",abbr:"PQL",color:"#b18cff",cat:"Observability",desc:"Query PromQL per Kubernetes e OpenShift organizzate per oggetto.",tags:["PromQL","metrics"],protected:true},
+  {name:"Redis at Scale",url:"https://redis-ops-course.pages.dev",abbr:"RDS",color:"#ff8a5c",cat:"Data",desc:"Corso operativo Redis: replica, persistenza, cluster, osservabilità, con lab pratici.",tags:["Redis","corso"],protected:true}
+];
+
+var grid=document.getElementById('grid'),chips=document.getElementById('chips'),q=document.getElementById('q'),cat='Tutti';
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+SITES.forEach(function(s){
+  var a=document.createElement('a');a.className='card';a.href=s.url;a.rel='noopener';a.dataset.cat=s.cat;
+  a.dataset.text=(s.name+' '+s.desc+' '+s.tags.join(' ')+' '+s.cat).toLowerCase();
+  a.innerHTML='<div class="top"><div class="ico" style="background:'+esc(s.color)+'">'+esc(s.abbr)+'</div><div><h2>'+esc(s.name)+'</h2><div class="url">'+esc(s.url.replace('https://',''))+'</div></div></div>'+
+    '<p>'+esc(s.desc)+'</p><div class="meta">'+(s.protected?'<span class="tag lock">🔒 login</span>':'<span class="tag open">open</span>')+
+    s.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div>';
+  grid.appendChild(a);
+});
+['Tutti'].concat(SITES.map(function(s){return s.cat}).filter(function(c,i,arr){return arr.indexOf(c)===i})).forEach(function(c){
+  var b=document.createElement('button');b.className='chip'+(c==='Tutti'?' on':'');b.textContent=c;
+  b.onclick=function(){cat=c;[].forEach.call(chips.children,function(x){x.classList.toggle('on',x===b)});filt()};chips.appendChild(b);
+});
+function filt(){
+  var v=q.value.trim().toLowerCase();
+  [].forEach.call(grid.children,function(c){c.classList.toggle('hide',!((cat==='Tutti'||c.dataset.cat===cat)&&(!v||c.dataset.text.indexOf(v)>-1)))});
+}
+q.addEventListener('input',filt);
+document.addEventListener('keydown',function(e){if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus()}});
+</script>
+</body>
+</html>
